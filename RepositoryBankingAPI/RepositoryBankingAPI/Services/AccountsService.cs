@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using RepositoryBankingAPI.Models;
-using RepositoryBankingAPI.Models.Records;
+using RepositoryBankingAPI.Models.DTOs.Requests;
+using RepositoryBankingAPI.Models.DTOs.Responses;
 
 namespace RepositoryBankingAPI.Services;
 
