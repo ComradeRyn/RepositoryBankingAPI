@@ -76,18 +76,33 @@ public class AccountsService
             null);
     }
 
-    public async Task<UpdateBalanceResponse> Withdraw(string id, ChangeBalanceRequest request)
+    public async Task<ApiResponse<ChangeBalanceResponse>> Withdraw(ApiRequest<ChangeBalanceRequest> request)
     {
-        var account = await GetAccount(id);
-        
-        ValidatePositiveAmount(request.Amount);
-        ValidateSufficientBalance(account.Balance, request.Amount);
-        
-        account.Balance -= request.Amount;
+        var account = await _repo.GetAccount(request.Id);
 
-        await _context.SaveChangesAsync();
+        if (account is null)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+                Messages.NotFound);
+        }
+
+        if (request.Request.Amount <= 0)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
+                Messages.RequirePositiveAmount);
+        }
+
+        if (request.Request.Amount > account.Balance)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
+                Messages.InsufficientBalance);
+        }
         
-        return new UpdateBalanceResponse(account.Balance);
+        account.Balance -= request.Request.Amount;
+        await _repo.UpdateAccount(account);
+        
+        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, account.Balance.AsDto(),
+            null);
     }
     
     public async Task<UpdateBalanceResponse> Transfer(TransferRequest request)
