@@ -141,5 +141,20 @@ namespace RepositoryBankingAPI.Controllers
 
             return Ok(response.Response);
         }
+        
+        [HttpGet("{id}/convert")]
+        [ProducesResponseType(typeof(ConversionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<ConversionResponse>> GetConversion(string id, ConversionRequest request)
+        {
+            var response = await _service.Convert(new ApiRequest<ConversionRequest>(id, request));
+
+            if (!response.ValidateSuccessfulCode())
+            {
+                return BadRequest(response.ErrorMessage);
+            }
+            
+            return Ok(response.Response);
+        }
     }
 }

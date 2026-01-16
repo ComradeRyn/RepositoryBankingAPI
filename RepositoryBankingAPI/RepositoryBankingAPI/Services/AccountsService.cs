@@ -142,6 +142,30 @@ public class AccountsService
         return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, receiver.Balance.AsDto(), 
             null);
     }
+    
+    public async Task<ApiResponse<ConversionResponse>> Convert(ApiRequest<ConversionRequest> request)
+    {
+        var account = await _repo.GetAccount(request.Id);
+        if (account is null)
+        {
+            return new ApiResponse<ConversionResponse>(HttpStatusCode.NotFound, null, 
+                Messages.NotFound); 
+        }
+        
+        // TODO: Should I validate the input string?
+
+        var rates = await _client.GetConversionRatesAsync(request.Request.CurrencyType);
+        if (rates is null)
+        {
+            return new ApiResponse<ConversionResponse>(HttpStatusCode.BadRequest, null, 
+                Messages.InvalidCurrencies);
+        }
+        
+        var convertedBalances = rates.Select(rate => account.Balance * rate).ToList();
+
+        return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, new ConversionResponse(convertedBalances), 
+            null);
+    }
 
     private bool ValidateName(string name)
         => Regex.IsMatch(name, NameRegexp);
