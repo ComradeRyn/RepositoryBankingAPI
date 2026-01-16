@@ -145,21 +145,5 @@ public class AccountsService
 
     private bool ValidateName(string name)
         => Regex.IsMatch(name, NameRegexp);
-
-    private void ValidatePositiveAmount(decimal amount)
-    {
-        if (amount <= 0)
-        {
-            // throw new NegativeAmountException("Requested amount must be positive", nameof(amount));
-        }
-    }
-
-    private void ValidateSufficientBalance(decimal balance, decimal amount)
-    {
-        if (amount > balance)
-        {
-            // throw new InsufficientFundsException("Requested amount must be less than or equal to current balance",
-            //    nameof(amount));
-        }
-    }
+    
 }
