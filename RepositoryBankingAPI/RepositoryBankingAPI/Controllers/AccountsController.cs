@@ -22,20 +22,18 @@ namespace RepositoryBankingAPI.Controllers
         /// <param name="request">A record which contains a string Name for the new account</param>
         /// <returns>The information of the generated account</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Account>> PostAccount(CreationRequest request)
+        public async Task<ActionResult<AccountResponse>> PostAccount(CreationRequest request)
         {
-            // try
-            // {
-            //     return Ok(await _service.CreateAccount(request));
-            // }
-            // catch(ArgumentException e)
-            // {
-            //     return BadRequest(e.Message);
-            // }
+            var response = await _service.CreateAccount(request);
 
-            return null;
+            if (!response.ValidateSuccessfulCode())
+            {
+                return NotFound(response.ErrorMessage);
+            }
+
+            return Ok(response.Response);
         }
         
         /// <summary>
