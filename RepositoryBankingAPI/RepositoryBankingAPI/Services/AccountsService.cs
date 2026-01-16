@@ -1,34 +1,44 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net;
+using System.Text.RegularExpressions;
+using RepositoryBankingAPI.Clients;
 using RepositoryBankingAPI.Models;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;
+using RepositoryBankingAPI.Repositories;
 
 namespace RepositoryBankingAPI.Services;
 
 public class AccountsService
 {
     private const string NameRegexp = @"([A-Z][a-z]+)\s(([A-Z][a-z]*)\s)?([A-Z][a-z]+)";
-    private readonly AccountContext _context;
+    private readonly IAccountRepository _repo;
+    private readonly CurrencyClient _client;
 
-    public AccountsService(AccountContext context)
+    public AccountsService(IAccountRepository repo, CurrencyClient client)
     {
-        _context = context;
+        _repo = repo;
+        _client = client;
     }
 
-    public async Task<Account> GetAccount(string id)
+    public async Task<ApiResponse<AccountResponse>> GetAccount(string id)
     {
-        var account = await _context.Accounts.FindAsync(id);
+        var account = await _repo.GetAccount(id);
         if (account is null)
         {
-            // throw new AccountNotFoundException("No user found with given id", nameof(id));
+            return new ApiResponse<AccountResponse>(HttpStatusCode.NotFound, null, 
+                Messages.NotFound);
         }
         
-        return account;
+        return new ApiResponse<AccountResponse>(HttpStatusCode.OK, account.AsDto(), null);
     }
 
-    public async Task<Account> CreateAccount(CreationRequest request)
+    public async Task<ApiResponse<AccountResponse>> CreateAccount(CreationRequest request)
     {
-        ValidateName(request.Name);
+        if (!ValidateName(request.Name))
+        {
+            return new ApiResponse<AccountResponse>(HttpStatusCode.BadRequest, null, 
+                Messages.InvalidName);
+        }
 
         var newAccount = new Account
         {
@@ -36,13 +46,12 @@ public class AccountsService
             HolderName = request.Name,
         };
         
-        await _context.Accounts.AddAsync(newAccount);
-        await _context.SaveChangesAsync();
+        await _repo.AddAccount(newAccount);
         
-        return newAccount;
+        return new ApiResponse<AccountResponse>(HttpStatusCode.OK, newAccount.AsDto(), null);
     }
 
-    public async Task<UpdateBalanceResponse> Deposit(string id, ChangeBalanceRequest request)
+    public async Task<ApiResponse<ChangeBalanceResponse>> Deposit(ApiRequest<ChangeBalanceResponse> request)
     {
         var account = await GetAccount(id);
         
