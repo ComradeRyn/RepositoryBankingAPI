@@ -105,20 +105,42 @@ public class AccountsService
             null);
     }
     
-    public async Task<UpdateBalanceResponse> Transfer(TransferRequest request)
+    public async Task<ApiResponse<ChangeBalanceResponse>> Transfer(TransferRequest request)
     {
-        var receiver = await GetAccount(request.ReceiverId);
-        var sender = await GetAccount(request.SenderId);
+        var receiver = await _repo.GetAccount(request.ReceiverId);
+        if (receiver is null)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+                Messages.NotFound);
+        }
+        
+        var sender = await _repo.GetAccount(request.SenderId);
+        if (sender is null)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+                Messages.NotFound);
+        }
 
-        ValidatePositiveAmount(request.Amount);
-        ValidateSufficientBalance(sender.Balance, request.Amount);
+        if (request.Amount <= 0)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
+                Messages.RequirePositiveAmount);
+        }
+
+        if (request.Amount > sender.Balance)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
+                Messages.InsufficientBalance);
+        }
 
         sender.Balance -= request.Amount;
         receiver.Balance += request.Amount;
         
-        await _context.SaveChangesAsync();
+        await _repo.UpdateAccount(sender);
+        await _repo.UpdateAccount(receiver);
 
-        return new UpdateBalanceResponse(receiver.Balance);
+        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, receiver.Balance.AsDto(), 
+            null);
     }
 
     private bool ValidateName(string name)
