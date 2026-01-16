@@ -1,6 +1,8 @@
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryBankingAPI.Models;
-using RepositoryBankingAPI.Models.Records;
+using RepositoryBankingAPI.Models.DTOs.Requests;
+using RepositoryBankingAPI.Models.DTOs.Responses;
 using RepositoryBankingAPI.Services;
 
 namespace RepositoryBankingAPI.Controllers
@@ -46,16 +48,14 @@ namespace RepositoryBankingAPI.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Account>> GetAccount(string id)
         {
-            // try
-            // {
-            //     return Ok(await _service.GetAccount(id));
-            // }
-            // catch (AccountNotFoundException e)
-            // {
-            //     return NotFound(e.Message);
-            // }
+            var response = await _service.GetAccount(id);
 
-            return null;
+            if (!response.ValidateSuccessfulCode())
+            {
+                return NotFound(response.ErrorMessage);
+            }
+
+            return Ok(response.Response);
         }
         
         /// <summary>
@@ -65,25 +65,25 @@ namespace RepositoryBankingAPI.Controllers
         /// <param name="request">A record which contains a decimal Amount that will be deposited</param>
         /// <returns>A response object containing the new account balance</returns>
         [HttpPost("{id}/deposits")]
-        [ProducesResponseType(typeof(UpdateBalanceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateBalanceResponse>> PostDeposit(string id, ChangeBalanceRequest request)
+        public async Task<ActionResult<ChangeBalanceResponse>> PostDeposit(string id, ChangeBalanceRequest request)
         {
-            // try
-            // {
-            //     return Ok(await _service.Deposit(id, request));
-            // }
-            // catch (AccountNotFoundException e)
-            // {
-            //     return NotFound(e.Message);
-            // }
-            // catch (NegativeAmountException e)
-            // {
-            //     return BadRequest(e.Message);
-            // }
+            var response = await _service.Deposit(new ApiRequest<ChangeBalanceRequest>(id, request));
 
-            return null;
+            if (!response.ValidateSuccessfulCode())
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        return NotFound(response.ErrorMessage);
+                    case HttpStatusCode.BadRequest:
+                        return BadRequest(response.ErrorMessage);
+                }
+            }
+
+            return Ok(response.Response);
         }
         
         /// <summary>
@@ -93,25 +93,25 @@ namespace RepositoryBankingAPI.Controllers
         /// <param name="request">A record which contains a decimal Amount that will be withdrawn</param>
         /// <returns>A response object containing the new account balance</returns>
         [HttpPost("{id}/withdraws")]
-        [ProducesResponseType(typeof(UpdateBalanceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateBalanceResponse>> PostWithdraw(string id, ChangeBalanceRequest request)
+        public async Task<ActionResult<ChangeBalanceResponse>> PostWithdraw(string id, ChangeBalanceRequest request)
         {
-            // try
-            // {
-            //     return Ok(await _service.Withdraw(id, request));
-            // }
-            // catch (AccountNotFoundException e)
-            // {
-            //     return NotFound(e.Message);
-            // }
-            // catch (Exception e) when (e is InsufficientFundsException or NegativeAmountException)
-            // {
-            //     return BadRequest(e.Message);
-            // }
+            var response = await _service.Withdraw(new ApiRequest<ChangeBalanceRequest>(id, request));
 
-            return null;
+            if (!response.ValidateSuccessfulCode())
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        return NotFound(response.ErrorMessage);
+                    case HttpStatusCode.BadRequest:
+                        return BadRequest(response.ErrorMessage);
+                }
+            }
+
+            return Ok(response.Response);
         }
 
         /// <summary>
@@ -121,25 +121,25 @@ namespace RepositoryBankingAPI.Controllers
         /// account, along with the decimal amount that will be transferred</param>
         /// <returns>A response object containing the receiver's new account balance</returns>
         [HttpPost("transfers")]
-        [ProducesResponseType(typeof(UpdateBalanceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UpdateBalanceResponse>> PostTransfer(TransferRequest request)
+        public async Task<ActionResult<ChangeBalanceResponse>> PostTransfer(TransferRequest request)
         {
-            // try
-            // {
-            //     return Ok(await _service.Transfer(request));
-            // }
-            // catch (AccountNotFoundException e)
-            // {
-            //     return NotFound(e.Message);
-            // }
-            // catch (Exception e) when (e is InsufficientFundsException or NegativeAmountException)
-            // {
-            //     return BadRequest(e.Message);
-            // }
+            var response = await _service.Transfer(request);
+            
+            if (!response.ValidateSuccessfulCode())
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.NotFound:
+                        return NotFound(response.ErrorMessage);
+                    case HttpStatusCode.BadRequest:
+                        return BadRequest(response.ErrorMessage);
+                }
+            }
 
-            return null;
+            return Ok(response.Response);
         }
     }
 }
