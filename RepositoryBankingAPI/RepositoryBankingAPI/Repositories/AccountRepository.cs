@@ -31,6 +31,7 @@ public class AccountRepository : IAccountRepository
         }
 
         result.Balance = account.Balance;
+        await _context.SaveChangesAsync();
 
         return result;
     }
