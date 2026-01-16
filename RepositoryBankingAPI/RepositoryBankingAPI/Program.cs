@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using RepositoryBankingAPI.Clients;
 using RepositoryBankingAPI.Models;
+using RepositoryBankingAPI.Repositories;
 using RepositoryBankingAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AccountContext>(opt => opt.UseInMemoryDatabase("AccountList"));
+
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<CurrencyClient>();
 builder.Services.AddScoped<AccountsService>();
 
 var app = builder.Build();
