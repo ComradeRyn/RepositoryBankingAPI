@@ -93,15 +93,9 @@ public class AccountsService
 
         return new UpdateBalanceResponse(receiver.Balance);
     }
-    
-    private void ValidateName(string name)
-    {
-        if (!Regex.IsMatch(name, NameRegexp))
-        {
-            throw new ArgumentException("Name must be in the format of <first name> <middle name> <last name>", 
-                nameof(name));
-        }
-    }
+
+    private bool ValidateName(string name)
+        => Regex.IsMatch(name, NameRegexp);
 
     private void ValidatePositiveAmount(decimal amount)
     {
