@@ -51,17 +51,29 @@ public class AccountsService
         return new ApiResponse<AccountResponse>(HttpStatusCode.OK, newAccount.AsDto(), null);
     }
 
-    public async Task<ApiResponse<ChangeBalanceResponse>> Deposit(ApiRequest<ChangeBalanceResponse> request)
+    public async Task<ApiResponse<ChangeBalanceResponse>> Deposit(ApiRequest<ChangeBalanceRequest> request)
     {
-        var account = await GetAccount(id);
+        var account = await _repo.GetAccount(request.Id);
+
+        if (account is null)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+                Messages.NotFound);
+        }
+
+        if (request.Request.Amount <= 0)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
+                Messages.RequirePositiveAmount);
+        }
         
-        ValidatePositiveAmount(request.Amount);
-        
-        account.Balance += request.Amount;
-        
-        await _context.SaveChangesAsync();
-        
-        return new UpdateBalanceResponse(account.Balance);
+        account.Balance += request.Request.Amount;
+
+        await _repo.UpdateAccount(account);
+
+        // TODO: take another look here for naming
+        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, account.Balance.AsDto(), 
+            null);
     }
 
     public async Task<UpdateBalanceResponse> Withdraw(string id, ChangeBalanceRequest request)
