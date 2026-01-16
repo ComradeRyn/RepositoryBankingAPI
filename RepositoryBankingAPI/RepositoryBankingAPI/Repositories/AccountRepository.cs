@@ -4,6 +4,7 @@ namespace RepositoryBankingAPI.Repositories;
 
 public class AccountRepository : IAccountRepository
 {
+    // TODO: revise Update function to prevent round trips
     private readonly AccountContext _context;
 
     public AccountRepository(AccountContext context)
