@@ -23,17 +23,11 @@ public class AccountRepository : IAccountRepository
         return account;
     }
 
-    public async Task<Account?> UpdateAccount(Account account)
+    public async Task<Account?> UpdateAccount(Account account, decimal amount)
     {
-        var result = await GetAccount(account.Id);
-        if (result is null)
-        {
-            return null;
-        }
-
-        result.Balance = account.Balance;
+        account.Balance += amount;
         await _context.SaveChangesAsync();
 
-        return result;
+        return account;
     }
 }

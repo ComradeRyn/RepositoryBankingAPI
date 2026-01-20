@@ -49,7 +49,6 @@ public class AccountsService
             Id = Guid.NewGuid().ToString(),
             HolderName = request.Name,
         };
-        
         await _repo.AddAccount(newAccount);
         
         return new ApiResponse<AccountResponse>(HttpStatusCode.OK, newAccount.AsDto(), null);
@@ -70,10 +69,8 @@ public class AccountsService
             return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
                 Messages.RequirePositiveAmount);
         }
-        
-        account.Balance += request.Request.Amount;
 
-        await _repo.UpdateAccount(account);
+        await _repo.UpdateAccount(account, request.Request.Amount);
 
         // TODO: take another look here for naming
         return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, account.Balance.AsDto(), 
@@ -102,8 +99,7 @@ public class AccountsService
                 Messages.InsufficientBalance);
         }
         
-        account.Balance -= request.Request.Amount;
-        await _repo.UpdateAccount(account);
+        await _repo.UpdateAccount(account, request.Request.Amount * -1);
         
         return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, account.Balance.AsDto(),
             null);
@@ -136,12 +132,9 @@ public class AccountsService
             return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
                 Messages.InsufficientBalance);
         }
-
-        sender.Balance -= request.Amount;
-        receiver.Balance += request.Amount;
         
-        await _repo.UpdateAccount(sender);
-        await _repo.UpdateAccount(receiver);
+        await _repo.UpdateAccount(sender, request.Amount * -1);
+        await _repo.UpdateAccount(receiver, request.Amount);
 
         return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, receiver.Balance.AsDto(), 
             null);
