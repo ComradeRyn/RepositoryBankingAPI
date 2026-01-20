@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using System.Net;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 
 namespace RepositoryBankingAPI.Clients;
@@ -15,20 +16,18 @@ public class CurrencyClient : ICurrencyClient
     }
     
     // TODO: cover the case if the CurrencyApi is down
-    public async Task<CurrencyApiResponse?> GetConversionRatesAsync(string currencyTypes)
+    public async Task<ApiResponse<CurrencyApiResponse>> GetConversionRatesAsync(string currencyTypes)
     {
         try
         {
-            return await _httpClient.GetFromJsonAsync<CurrencyApiResponse>
+            var response = await _httpClient.GetFromJsonAsync<CurrencyApiResponse>
                 ($"v1/latest?apikey={_configuration["ApiKey"]}&currencies={currencyTypes}");
+
+            return new ApiResponse<CurrencyApiResponse>(HttpStatusCode.OK, response, null);
         }
         catch (HttpRequestException e)
         {
-            // if (e.StatusCode.)
-            // {
-            //     
-            // }
-            return null;
+            return new ApiResponse<CurrencyApiResponse>((HttpStatusCode)e.StatusCode!, null, e.Message);
         }
     }
 }
