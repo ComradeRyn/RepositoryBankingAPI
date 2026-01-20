@@ -1,4 +1,6 @@
-﻿namespace RepositoryBankingAPI.Clients;
+﻿using RepositoryBankingAPI.Models.DTOs.Responses;
+
+namespace RepositoryBankingAPI.Clients;
 
 public class CurrencyClient
 {
@@ -17,11 +19,16 @@ public class CurrencyClient
     }
 
     // TODO: Must convert the JSON into a list of decimals
-    public async Task<List<decimal>?> GetConversionRatesAsync(string currencyTypes)
+    public async Task<CurrencyApiResponse?> GetConversionRatesAsync(string currencyTypes)
     {
-        var response = await _sharedClient.GetFromJsonAsync<List<decimal>>
+        try
+        {
+            return await _sharedClient.GetFromJsonAsync<CurrencyApiResponse>
                 ($"v1/latest?apikey={key}&currencies={currencyTypes}");
-
-        return response;
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
     }
 }

@@ -143,9 +143,9 @@ namespace RepositoryBankingAPI.Controllers
         }
         // TODO: add xml comment explaining functionality
         [HttpGet("{id}/convert")]
-        [ProducesResponseType(typeof(ConversionResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CurrencyApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ConversionResponse>> GetConversion(string id, ConversionRequest request)
+        public async Task<ActionResult<CurrencyApiResponse>> GetConversion(string id, ConversionRequest request)
         {
             var response = await _service.Convert(new ApiRequest<ConversionRequest>(id, request));
 

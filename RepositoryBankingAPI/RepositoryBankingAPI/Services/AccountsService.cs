@@ -165,7 +165,7 @@ public class AccountsService
                 Messages.InvalidCurrencies);
         }
         
-        var convertedBalances = rates.Select(rate => account.Balance * rate).ToList();
+        var convertedBalances = rates.Data.Values.Select(rate => account.Balance * rate).ToList();
 
         return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, new ConversionResponse(convertedBalances), 
             null);
