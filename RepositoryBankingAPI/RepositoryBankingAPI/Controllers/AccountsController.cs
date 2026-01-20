@@ -33,7 +33,7 @@ namespace RepositoryBankingAPI.Controllers
                 return NotFound(response.ErrorMessage);
             }
 
-            return Ok(response.Response);
+            return Ok(response.Content);
         }
         
         /// <summary>
@@ -52,7 +52,7 @@ namespace RepositoryBankingAPI.Controllers
                 return NotFound(response.ErrorMessage);
             }
 
-            return Ok(response.Response);
+            return Ok(response.Content);
         }
         
         /// <summary>
@@ -81,7 +81,7 @@ namespace RepositoryBankingAPI.Controllers
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
-            return Ok(response.Response);
+            return Ok(response.Content);
         }
         
         /// <summary>
@@ -110,7 +110,7 @@ namespace RepositoryBankingAPI.Controllers
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
-            return Ok(response.Response);
+            return Ok(response.Content);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace RepositoryBankingAPI.Controllers
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
-            return Ok(response.Response);
+            return Ok(response.Content);
         }
         
         /// <summary>
@@ -169,7 +169,7 @@ namespace RepositoryBankingAPI.Controllers
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
-            return Ok(response.Response);
+            return Ok(response.Content);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace RepositoryBankingAPI.Services;
 public class AccountsService
 {
     // TODO: check over service class for redundancy and adherence to conventions
-    // TODO: review names in the DTOs for redundancy
     
     private const string NameRegexp = @"([A-Z][a-z]+)\s(([A-Z][a-z]*)\s)?([A-Z][a-z]+)";
     private readonly IAccountRepository _repo;
@@ -28,18 +27,22 @@ public class AccountsService
         var account = await _repo.GetAccount(id);
         if (account is null)
         {
-            return new ApiResponse<AccountResponse>(HttpStatusCode.NotFound, null, 
+            return new ApiResponse<AccountResponse>(HttpStatusCode.NotFound,
+                null,
                 Messages.NotFound);
         }
         
-        return new ApiResponse<AccountResponse>(HttpStatusCode.OK, account.AsDto(), null);
+        return new ApiResponse<AccountResponse>(HttpStatusCode.OK,
+            account.AsDto(),
+            null);
     }
 
     public async Task<ApiResponse<AccountResponse>> CreateAccount(CreationRequest request)
     {
         if (!ValidateName(request.Name))
         {
-            return new ApiResponse<AccountResponse>(HttpStatusCode.BadRequest, null, 
+            return new ApiResponse<AccountResponse>(HttpStatusCode.BadRequest,
+                null,
                 Messages.InvalidName);
         }
 
@@ -50,7 +53,9 @@ public class AccountsService
         };
         await _repo.AddAccount(newAccount);
         
-        return new ApiResponse<AccountResponse>(HttpStatusCode.OK, newAccount.AsDto(), null);
+        return new ApiResponse<AccountResponse>(HttpStatusCode.OK,
+            newAccount.AsDto(),
+            null);
     }
 
     public async Task<ApiResponse<ChangeBalanceResponse>> Deposit(ApiRequest<ChangeBalanceRequest> request)
@@ -59,20 +64,22 @@ public class AccountsService
 
         if (account is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+                null,
                 Messages.NotFound);
         }
 
-        if (request.Request.Amount <= 0)
+        if (request.Content.Amount <= 0)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
-                Messages.RequirePositiveAmount);
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+                null, 
+                Messages.NoNegativeAmount);
         }
 
-        await _repo.UpdateAccount(account, request.Request.Amount);
-
-        // TODO: take another look here for naming
-        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, account.Balance.AsDto(), 
+        await _repo.UpdateAccount(account, request.Content.Amount);
+        
+        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK,
+            account.Balance.AsDto(),
             null);
     }
 
@@ -82,25 +89,29 @@ public class AccountsService
 
         if (account is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+                null,
                 Messages.NotFound);
         }
 
-        if (request.Request.Amount <= 0)
+        if (request.Content.Amount <= 0)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
-                Messages.RequirePositiveAmount);
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+                null,
+                Messages.NoNegativeAmount);
         }
 
-        if (request.Request.Amount > account.Balance)
+        if (request.Content.Amount > account.Balance)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+                null,
                 Messages.InsufficientBalance);
         }
         
-        await _repo.UpdateAccount(account, request.Request.Amount * -1);
+        await _repo.UpdateAccount(account, request.Content.Amount * -1);
         
-        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, account.Balance.AsDto(),
+        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK,
+            account.Balance.AsDto(),
             null);
     }
     
@@ -109,33 +120,38 @@ public class AccountsService
         var receiver = await _repo.GetAccount(request.ReceiverId);
         if (receiver is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+                null,
                 Messages.NotFound);
         }
         
         var sender = await _repo.GetAccount(request.SenderId);
         if (sender is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound, null, 
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+                null,
                 Messages.NotFound);
         }
 
         if (request.Amount <= 0)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
-                Messages.RequirePositiveAmount);
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+                null,
+                Messages.NoNegativeAmount);
         }
 
         if (request.Amount > sender.Balance)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest, null,
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+                null,
                 Messages.InsufficientBalance);
         }
         
         await _repo.UpdateAccount(sender, request.Amount * -1);
         await _repo.UpdateAccount(receiver, request.Amount);
 
-        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK, receiver.Balance.AsDto(), 
+        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK,
+            receiver.Balance.AsDto(),
             null);
     }
     
@@ -144,19 +160,20 @@ public class AccountsService
         var account = await _repo.GetAccount(request.Id);
         if (account is null)
         {
-            return new ApiResponse<CurrencyApiResponse>(HttpStatusCode.NotFound, null, 
+            return new ApiResponse<CurrencyApiResponse>(HttpStatusCode.NotFound,
+                null,
                 Messages.NotFound); 
         }
 
-        var response = await _client.GetConversionRatesAsync(request.Request.CurrencyType);
-        if (response.Response is null)
+        var response = await _client.GetConversionRatesAsync(request.Content.CurrencyType);
+        if (response.Content is null)
         {
             return response;
         }
 
-        foreach (var currencyType in response.Response.Data.Keys)
+        foreach (var currencyType in response.Content.Data.Keys)
         {
-            response.Response.Data[currencyType] *= account.Balance;
+            response.Content.Data[currencyType] *= account.Balance;
         }
 
         return response;

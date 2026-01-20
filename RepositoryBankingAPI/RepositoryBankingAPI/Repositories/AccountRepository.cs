@@ -22,7 +22,7 @@ public class AccountRepository : IAccountRepository
         return account;
     }
 
-    public async Task<Account?> UpdateAccount(Account account, decimal amount)
+    public async Task<Account> UpdateAccount(Account account, decimal amount)
     {
         account.Balance += amount;
         await _context.SaveChangesAsync();

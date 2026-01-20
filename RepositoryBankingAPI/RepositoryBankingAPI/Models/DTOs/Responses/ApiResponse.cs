@@ -2,4 +2,4 @@
 
 namespace RepositoryBankingAPI.Models.DTOs.Responses;
 
-public record ApiResponse<T>(HttpStatusCode StatusCode, T? Response, string? ErrorMessage);
+public record ApiResponse<T>(HttpStatusCode StatusCode, T? Content, string? ErrorMessage);
