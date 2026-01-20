@@ -6,25 +6,24 @@ public class CurrencyClient
 {
     private const string ApiWebAddress = "https://api.freecurrencyapi.com";
     private readonly HttpClient _sharedClient;
-    
-    // TODO: Remove this reference to the key and place it in the appsettings
-    private readonly string key = "fca_live_6P8f9slpZdyzX8XxZrKPMb2EuzCttCd892zZnK1A";
+    private readonly IConfiguration _configuration;
 
-    public CurrencyClient()
+    public CurrencyClient(IConfiguration configuration)
     {
-        _sharedClient = new()
+        _configuration = configuration;
+        _sharedClient = new HttpClient
         {
             BaseAddress = new Uri(ApiWebAddress),
         };
     }
-
-    // TODO: Must convert the JSON into a list of decimals
+    
+    // TODO: cover the case if the CurrencyApi is down
     public async Task<CurrencyApiResponse?> GetConversionRatesAsync(string currencyTypes)
     {
         try
         {
             return await _sharedClient.GetFromJsonAsync<CurrencyApiResponse>
-                ($"v1/latest?apikey={key}&currencies={currencyTypes}");
+                ($"v1/latest?apikey={_configuration["ApiKey"]}&currencies={currencyTypes}");
         }
         catch (HttpRequestException)
         {
