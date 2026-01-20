@@ -147,28 +147,27 @@ public class AccountsService
             null);
     }
     
-    public async Task<ApiResponse<ConversionResponse>> Convert(ApiRequest<ConversionRequest> request)
+    public async Task<ApiResponse<CurrencyApiResponse>> Convert(ApiRequest<ConversionRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
         if (account is null)
         {
-            return new ApiResponse<ConversionResponse>(HttpStatusCode.NotFound, null, 
+            return new ApiResponse<CurrencyApiResponse>(HttpStatusCode.NotFound, null, 
                 Messages.NotFound); 
         }
-        
-        // TODO: Should I validate the input string?
 
-        var rates = await _client.GetConversionRatesAsync(request.Request.CurrencyType);
-        if (rates is null)
+        var response = await _client.GetConversionRatesAsync(request.Request.CurrencyType);
+        if (response.Response is null)
         {
-            return new ApiResponse<ConversionResponse>(HttpStatusCode.BadRequest, null, 
-                Messages.InvalidCurrencies);
+            return response;
         }
-        
-        var convertedBalances = rates.Data.Values.Select(rate => account.Balance * rate).ToList();
 
-        return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, new ConversionResponse(convertedBalances), 
-            null);
+        foreach (var currencyType in response.Response.Data.Keys)
+        {
+            response.Response.Data[currencyType] *= account.Balance;
+        }
+
+        return response;
     }
 
     private bool ValidateName(string name)
