@@ -1,6 +1,5 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using RepositoryBankingAPI.Models;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 using RepositoryBankingAPI.Services;
@@ -29,8 +28,7 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<AccountResponse>> PostAccount(CreationRequest request)
         {
             var response = await _service.CreateAccount(request);
-
-            if (!response.ValidateSuccessfulCode())
+            if (response.StatusCode is HttpStatusCode.NotFound)
             {
                 return NotFound(response.ErrorMessage);
             }
@@ -42,15 +40,14 @@ namespace RepositoryBankingAPI.Controllers
         /// Retrieves an account based off a given ID
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
-        /// <returns>The account information corresponding to the id</returns>
+        /// <returns>The account information corresponding to the ID</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Account>> GetAccount(string id)
+        public async Task<ActionResult<AccountResponse>> GetAccount(string id)
         {
             var response = await _service.GetAccount(id);
-
-            if (!response.ValidateSuccessfulCode())
+            if (response.StatusCode is HttpStatusCode.NotFound)
             {
                 return NotFound(response.ErrorMessage);
             }
@@ -71,16 +68,17 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ChangeBalanceResponse>> PostDeposit(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Deposit(new ApiRequest<ChangeBalanceRequest>(id, request));
-
+            // switch (response.StatusCode)
+            // {
+            //     case HttpStatusCode.NotFound:
+            //         return NotFound(response.ErrorMessage);
+            //     case HttpStatusCode.BadRequest:
+            //         return BadRequest(response.ErrorMessage);
+            // }
+            
             if (!response.ValidateSuccessfulCode())
             {
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.NotFound:
-                        return NotFound(response.ErrorMessage);
-                    case HttpStatusCode.BadRequest:
-                        return BadRequest(response.ErrorMessage);
-                }
+                return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
             return Ok(response.Response);
@@ -99,16 +97,17 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ChangeBalanceResponse>> PostWithdraw(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Withdraw(new ApiRequest<ChangeBalanceRequest>(id, request));
-
+            // switch (response.StatusCode)
+            // {
+            //     case HttpStatusCode.NotFound:
+            //         return NotFound(response.ErrorMessage);
+            //     case HttpStatusCode.BadRequest:
+            //         return BadRequest(response.ErrorMessage);
+            // }
+            
             if (!response.ValidateSuccessfulCode())
             {
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.NotFound:
-                        return NotFound(response.ErrorMessage);
-                    case HttpStatusCode.BadRequest:
-                        return BadRequest(response.ErrorMessage);
-                }
+                return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
             return Ok(response.Response);
@@ -127,16 +126,17 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ChangeBalanceResponse>> PostTransfer(TransferRequest request)
         {
             var response = await _service.Transfer(request);
+            // switch (response.StatusCode)
+            // {
+            //     case HttpStatusCode.NotFound:
+            //         return NotFound(response.ErrorMessage);
+            //     case HttpStatusCode.BadRequest:
+            //         return BadRequest(response.ErrorMessage);
+            // }
             
             if (!response.ValidateSuccessfulCode())
             {
-                switch (response.StatusCode)
-                {
-                    case HttpStatusCode.NotFound:
-                        return NotFound(response.ErrorMessage);
-                    case HttpStatusCode.BadRequest:
-                        return BadRequest(response.ErrorMessage);
-                }
+                return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
             return Ok(response.Response);
@@ -152,16 +152,23 @@ namespace RepositoryBankingAPI.Controllers
         [HttpGet("{id}/convert")]
         [ProducesResponseType(typeof(CurrencyApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<CurrencyApiResponse>> GetConversion(string id, ConversionRequest request)
         {
             var response = await _service.Convert(new ApiRequest<ConversionRequest>(id, request));
-
+            // switch (response.StatusCode)
+            // {
+            //     case HttpStatusCode.NotFound:
+            //         return NotFound(response.ErrorMessage);
+            //     case HttpStatusCode.UnprocessableEntity:
+            //         return UnprocessableEntity(response.ErrorMessage);
+            // }
+            
             if (!response.ValidateSuccessfulCode())
             {
-                // TODO: Fix the miss matched status code that is return when bad input
-                return BadRequest(response.ErrorMessage);
+                return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
-            
+
             return Ok(response.Response);
         }
     }
