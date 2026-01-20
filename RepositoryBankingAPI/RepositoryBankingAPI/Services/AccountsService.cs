@@ -171,9 +171,9 @@ public class AccountsService
             return response;
         }
 
-        foreach (var currencyType in response.Content.Data.Keys)
+        foreach (var currencyType in response.Content.ConvertedCurrenciesDict.Keys)
         {
-            response.Content.Data[currencyType] *= account.Balance;
+            response.Content.ConvertedCurrenciesDict[currencyType] *= account.Balance;
         }
 
         return response;
