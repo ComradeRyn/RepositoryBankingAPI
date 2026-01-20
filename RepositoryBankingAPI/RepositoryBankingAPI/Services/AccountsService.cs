@@ -12,7 +12,6 @@ public class AccountsService
 {
     // TODO: check over service class for redundancy and adherence to conventions
     // TODO: review names in the DTOs for redundancy
-    // TODO: Remove round trips to the database (see more in the repository class)
     
     private const string NameRegexp = @"([A-Z][a-z]+)\s(([A-Z][a-z]*)\s)?([A-Z][a-z]+)";
     private readonly IAccountRepository _repo;
