@@ -1,20 +1,17 @@
-﻿using RepositoryBankingAPI.Models.DTOs.Responses;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using RepositoryBankingAPI.Models.DTOs.Responses;
 
 namespace RepositoryBankingAPI.Clients;
 
-public class CurrencyClient
+public class CurrencyClient : ICurrencyClient
 {
-    private const string ApiWebAddress = "https://api.freecurrencyapi.com";
-    private readonly HttpClient _sharedClient;
+    private readonly HttpClient _httpClient;
     private readonly IConfiguration _configuration;
 
-    public CurrencyClient(IConfiguration configuration)
+    public CurrencyClient(HttpClient httpClient, IConfiguration configuration)
     {
         _configuration = configuration;
-        _sharedClient = new HttpClient
-        {
-            BaseAddress = new Uri(ApiWebAddress),
-        };
+        _httpClient = httpClient;
     }
     
     // TODO: cover the case if the CurrencyApi is down
@@ -22,11 +19,15 @@ public class CurrencyClient
     {
         try
         {
-            return await _sharedClient.GetFromJsonAsync<CurrencyApiResponse>
+            return await _httpClient.GetFromJsonAsync<CurrencyApiResponse>
                 ($"v1/latest?apikey={_configuration["ApiKey"]}&currencies={currencyTypes}");
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException e)
         {
+            // if (e.StatusCode.)
+            // {
+            //     
+            // }
             return null;
         }
     }

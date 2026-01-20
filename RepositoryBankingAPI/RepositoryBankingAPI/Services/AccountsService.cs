@@ -16,9 +16,9 @@ public class AccountsService
     
     private const string NameRegexp = @"([A-Z][a-z]+)\s(([A-Z][a-z]*)\s)?([A-Z][a-z]+)";
     private readonly IAccountRepository _repo;
-    private readonly CurrencyClient _client;
+    private readonly ICurrencyClient _client;
 
-    public AccountsService(IAccountRepository repo, CurrencyClient client)
+    public AccountsService(IAccountRepository repo, ICurrencyClient client)
     {
         _repo = repo;
         _client = client;
