@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 
 namespace RepositoryBankingAPI.Clients;
@@ -15,7 +14,6 @@ public class CurrencyClient : ICurrencyClient
         _httpClient = httpClient;
     }
     
-    // TODO: cover the case if the CurrencyApi is down
     public async Task<ApiResponse<CurrencyApiResponse>> GetConversionRatesAsync(string currencyTypes)
     {
         try
