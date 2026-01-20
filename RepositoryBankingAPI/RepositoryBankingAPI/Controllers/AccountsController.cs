@@ -141,7 +141,14 @@ namespace RepositoryBankingAPI.Controllers
 
             return Ok(response.Response);
         }
-        // TODO: add xml comment explaining functionality
+        
+        /// <summary>
+        /// Returns the balance of a provided account converted into the requested curriences
+        /// </summary>
+        /// <param name="id">The unique identification for the requested account</param>
+        /// <param name="request">A record which contains a string holding comma separated currencies</param>
+        /// <returns>A recording containing a dictionary where the keys are the currency type and the values
+        /// are the balance converted to the respective value</returns>
         [HttpGet("{id}/convert")]
         [ProducesResponseType(typeof(CurrencyApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -151,6 +158,7 @@ namespace RepositoryBankingAPI.Controllers
 
             if (!response.ValidateSuccessfulCode())
             {
+                // TODO: Fix the miss matched status code that is return when bad input
                 return BadRequest(response.ErrorMessage);
             }
             
