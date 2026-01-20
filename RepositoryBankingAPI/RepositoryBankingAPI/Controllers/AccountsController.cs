@@ -150,10 +150,10 @@ namespace RepositoryBankingAPI.Controllers
         /// <returns>A recording containing a dictionary where the keys are the currency type and the values
         /// are the balance converted to the respective value</returns>
         [HttpGet("{id}/convert")]
-        [ProducesResponseType(typeof(CurrencyApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ConversionResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status422UnprocessableEntity)]
-        public async Task<ActionResult<CurrencyApiResponse>> GetConversion(string id, ConversionRequest request)
+        public async Task<ActionResult<ConversionResponse>> GetConversion(string id, ConversionRequest request)
         {
             var response = await _service.Convert(new ApiRequest<ConversionRequest>(id, request));
             // switch (response.StatusCode)

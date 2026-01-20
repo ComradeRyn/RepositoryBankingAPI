@@ -10,8 +10,6 @@ namespace RepositoryBankingAPI.Services;
 
 public class AccountsService
 {
-    // TODO: check over service class for redundancy and adherence to conventions
-    
     private const string NameRegexp = @"([A-Z][a-z]+)\s(([A-Z][a-z]*)\s)?([A-Z][a-z]+)";
     private readonly IAccountRepository _repo;
     private readonly ICurrencyClient _client;
@@ -155,12 +153,12 @@ public class AccountsService
             null);
     }
     
-    public async Task<ApiResponse<CurrencyApiResponse>> Convert(ApiRequest<ConversionRequest> request)
+    public async Task<ApiResponse<ConversionResponse>> Convert(ApiRequest<ConversionRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
         if (account is null)
         {
-            return new ApiResponse<CurrencyApiResponse>(HttpStatusCode.NotFound,
+            return new ApiResponse<ConversionResponse>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound); 
         }

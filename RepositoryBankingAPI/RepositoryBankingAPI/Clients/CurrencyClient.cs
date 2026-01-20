@@ -14,18 +14,18 @@ public class CurrencyClient : ICurrencyClient
         _httpClient = httpClient;
     }
     
-    public async Task<ApiResponse<CurrencyApiResponse>> GetConversionRatesAsync(string currencyTypes)
+    public async Task<ApiResponse<ConversionResponse>> GetConversionRatesAsync(string currencyTypes)
     {
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<CurrencyApiResponse>
+            var response = await _httpClient.GetFromJsonAsync<ConversionResponse>
                 ($"v1/latest?apikey={_configuration["ApiKey"]}&currencies={currencyTypes}");
 
-            return new ApiResponse<CurrencyApiResponse>(HttpStatusCode.OK, response, null);
+            return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, response, null);
         }
         catch (HttpRequestException e)
         {
-            return new ApiResponse<CurrencyApiResponse>((HttpStatusCode)e.StatusCode!, null, e.Message);
+            return new ApiResponse<ConversionResponse>((HttpStatusCode)e.StatusCode!, null, e.Message);
         }
     }
 }
