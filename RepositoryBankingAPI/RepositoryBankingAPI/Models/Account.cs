@@ -2,8 +2,8 @@
 
 public class Account
 {
-    private int InteralId;
-    public string Id { get; init; }
-    public string HolderName{ get; init; }
+    private int InternalId;
+    public required string Id { get; init; }
+    public required string HolderName{ get; init; }
     public decimal Balance { get; set; }
 }
