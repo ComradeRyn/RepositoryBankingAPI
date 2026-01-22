@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using RepositoryBankingAPI.Models;
 using RepositoryBankingAPI.Models.DTOs.Responses;
+using Account = RepositoryBankingAPI.Models.DTOs.Responses.Account;
 
 namespace RepositoryBankingAPI.Services;
 
 public static class ExtensionMethods
 {
-    public static AccountResponse AsDto(this Account account) 
+    public static Account AsDto(this Models.Account account) 
         => new(account.Id, account.HolderName, account.Balance);
     public static ChangeBalanceResponse AsDto(this decimal amount) 
         => new(amount);

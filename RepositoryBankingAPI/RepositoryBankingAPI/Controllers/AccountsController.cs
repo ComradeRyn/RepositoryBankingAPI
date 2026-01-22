@@ -23,9 +23,9 @@ namespace RepositoryBankingAPI.Controllers
         /// <param name="request">A record which contains a string Name for the new account</param>
         /// <returns>The information of the generated account</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<AccountResponse>> PostAccount(CreationRequest request)
+        public async Task<ActionResult<Account>> PostAccount(CreationRequest request)
         {
             var response = await _service.CreateAccount(request);
             if (response.StatusCode is HttpStatusCode.NotFound)
@@ -42,9 +42,9 @@ namespace RepositoryBankingAPI.Controllers
         /// <param name="id">The unique identification for the requested account</param>
         /// <returns>The account information corresponding to the ID</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(AccountResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<AccountResponse>> GetAccount(string id)
+        public async Task<ActionResult<Account>> GetAccount(string id)
         {
             var response = await _service.GetAccount(id);
             if (response.StatusCode is HttpStatusCode.NotFound)

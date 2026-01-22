@@ -7,6 +7,7 @@ using RepositoryBankingAPI.Models.Constants;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 using RepositoryBankingAPI.Repositories;
+using Account = RepositoryBankingAPI.Models.DTOs.Responses.Account;
 
 namespace RepositoryBankingAPI.Services;
 
@@ -22,38 +23,38 @@ public class AccountsService
         _client = client;
     }
 
-    public async Task<ApiResponse<AccountResponse>> GetAccount(string id)
+    public async Task<ApiResponse<Account>> GetAccount(string id)
     {
         var account = await _repo.GetAccount(id);
         if (account is null)
         {
-            return new ApiResponse<AccountResponse>(HttpStatusCode.NotFound,
+            return new ApiResponse<Account>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound);
         }
         
-        return new ApiResponse<AccountResponse>(HttpStatusCode.OK,
+        return new ApiResponse<Account>(HttpStatusCode.OK,
             account.AsDto(),
             null);
     }
 
-    public async Task<ApiResponse<AccountResponse>> CreateAccount(CreationRequest request)
+    public async Task<ApiResponse<Account>> CreateAccount(CreationRequest request)
     {
         if (!ValidateName(request.Name))
         {
-            return new ApiResponse<AccountResponse>(HttpStatusCode.BadRequest,
+            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
                 null,
                 Messages.InvalidName);
         }
 
-        var newAccount = new Account
+        var newAccount = new Models.Account
         {
             Id = Guid.NewGuid().ToString(),
             HolderName = request.Name,
         };
         await _repo.AddAccount(newAccount);
         
-        return new ApiResponse<AccountResponse>(HttpStatusCode.OK, 
+        return new ApiResponse<Account>(HttpStatusCode.OK, 
             newAccount.AsDto(), 
             null);
     }
