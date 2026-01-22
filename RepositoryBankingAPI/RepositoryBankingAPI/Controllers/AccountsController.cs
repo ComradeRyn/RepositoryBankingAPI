@@ -60,7 +60,7 @@ namespace RepositoryBankingAPI.Controllers
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
         /// <param name="request">A record which contains a decimal Amount that will be deposited</param>
-        /// <returns>A response object containing the new account balance</returns>
+        /// <returns>A response record containing the new account balance</returns>
         [HttpPost("{id}/deposits")]
         [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -68,14 +68,6 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ChangeBalanceResponse>> PostDeposit(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Deposit(new ApiRequest<ChangeBalanceRequest>(id, request));
-            // switch (response.StatusCode)
-            // {
-            //     case HttpStatusCode.NotFound:
-            //         return NotFound(response.ErrorMessage);
-            //     case HttpStatusCode.BadRequest:
-            //         return BadRequest(response.ErrorMessage);
-            // }
-            
             if (!response.ValidateSuccessfulCode())
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
@@ -89,7 +81,7 @@ namespace RepositoryBankingAPI.Controllers
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
         /// <param name="request">A record which contains a decimal Amount that will be withdrawn</param>
-        /// <returns>A response object containing the new account balance</returns>
+        /// <returns>A response record containing the new account balance</returns>
         [HttpPost("{id}/withdraws")]
         [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -97,14 +89,6 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ChangeBalanceResponse>> PostWithdraw(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Withdraw(new ApiRequest<ChangeBalanceRequest>(id, request));
-            // switch (response.StatusCode)
-            // {
-            //     case HttpStatusCode.NotFound:
-            //         return NotFound(response.ErrorMessage);
-            //     case HttpStatusCode.BadRequest:
-            //         return BadRequest(response.ErrorMessage);
-            // }
-            
             if (!response.ValidateSuccessfulCode())
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
@@ -118,7 +102,7 @@ namespace RepositoryBankingAPI.Controllers
         /// </summary>
         /// <param name="request">A record that contains an id for the sending account, an id for the receiving
         /// account, along with the decimal amount that will be transferred</param>
-        /// <returns>A response object containing the receiver's new account balance</returns>
+        /// <returns>A response record containing the receiver's new account balance</returns>
         [HttpPost("transfers")]
         [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -126,14 +110,6 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ChangeBalanceResponse>> PostTransfer(TransferRequest request)
         {
             var response = await _service.Transfer(request);
-            // switch (response.StatusCode)
-            // {
-            //     case HttpStatusCode.NotFound:
-            //         return NotFound(response.ErrorMessage);
-            //     case HttpStatusCode.BadRequest:
-            //         return BadRequest(response.ErrorMessage);
-            // }
-            
             if (!response.ValidateSuccessfulCode())
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
@@ -143,11 +119,11 @@ namespace RepositoryBankingAPI.Controllers
         }
         
         /// <summary>
-        /// Returns the balance of a provided account converted into the requested curriences
+        /// Returns the balance of a provided account converted into the requested currencies
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
         /// <param name="request">A record which contains a string holding comma separated currencies</param>
-        /// <returns>A recording containing a dictionary where the keys are the currency type and the values
+        /// <returns>A record containing a dictionary where the keys are the currency type and the values
         /// are the balance converted to the respective value</returns>
         [HttpGet("{id}/convert")]
         [ProducesResponseType(typeof(ConversionResponse), StatusCodes.Status200OK)]
@@ -156,14 +132,6 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ConversionResponse>> GetConversion(string id, ConversionRequest request)
         {
             var response = await _service.Convert(new ApiRequest<ConversionRequest>(id, request));
-            // switch (response.StatusCode)
-            // {
-            //     case HttpStatusCode.NotFound:
-            //         return NotFound(response.ErrorMessage);
-            //     case HttpStatusCode.UnprocessableEntity:
-            //         return UnprocessableEntity(response.ErrorMessage);
-            // }
-            
             if (!response.ValidateSuccessfulCode())
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
