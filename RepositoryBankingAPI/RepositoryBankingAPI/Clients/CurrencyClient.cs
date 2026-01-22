@@ -15,6 +15,7 @@ public class CurrencyClient : ICurrencyClient
         _httpClient = httpClient;
     }
     
+    // TODO: Left off at refactoring this method as stated in the feed
     public async Task<ApiResponse<ConversionResponse>> GetConversionRates(string currencyTypes)
     {
         // try
