@@ -51,15 +51,14 @@ public class AccountsService
         };
         await _repo.AddAccount(newAccount);
         
-        return new ApiResponse<AccountResponse>(HttpStatusCode.OK,
-            newAccount.AsDto(),
+        return new ApiResponse<AccountResponse>(HttpStatusCode.OK, 
+            newAccount.AsDto(), 
             null);
     }
 
     public async Task<ApiResponse<ChangeBalanceResponse>> Deposit(ApiRequest<ChangeBalanceRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
-
         if (account is null)
         {
             return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
@@ -84,7 +83,6 @@ public class AccountsService
     public async Task<ApiResponse<ChangeBalanceResponse>> Withdraw(ApiRequest<ChangeBalanceRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
-
         if (account is null)
         {
             return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
@@ -115,6 +113,13 @@ public class AccountsService
     
     public async Task<ApiResponse<ChangeBalanceResponse>> Transfer(TransferRequest request)
     {
+        if (request.Amount <= 0)
+        {
+            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+                null,
+                Messages.NoNegativeAmount);
+        }
+        
         var receiver = await _repo.GetAccount(request.ReceiverId);
         if (receiver is null)
         {
@@ -129,13 +134,6 @@ public class AccountsService
             return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound);
-        }
-
-        if (request.Amount <= 0)
-        {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
-                null,
-                Messages.NoNegativeAmount);
         }
 
         if (request.Amount > sender.Balance)
@@ -163,7 +161,7 @@ public class AccountsService
                 Messages.NotFound); 
         }
 
-        var response = await _client.GetConversionRatesAsync(request.Content.CurrencyType);
+        var response = await _client.GetConversionRates(request.Content.CurrencyType);
         if (response.Content is null)
         {
             return response;
@@ -179,5 +177,4 @@ public class AccountsService
 
     private bool ValidateName(string name)
         => Regex.IsMatch(name, NameRegexp);
-    
 }
