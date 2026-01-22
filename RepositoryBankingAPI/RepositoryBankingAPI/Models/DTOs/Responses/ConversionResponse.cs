@@ -1,3 +1,3 @@
 ﻿namespace RepositoryBankingAPI.Models.DTOs.Responses;
 
-public record ConversionResponse(Dictionary<string, decimal> ConvertedCurrenciesDict);
+public record ConversionResponse(Dictionary<string, decimal> Data);
