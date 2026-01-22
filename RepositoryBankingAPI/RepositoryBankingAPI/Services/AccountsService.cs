@@ -1,7 +1,9 @@
 ﻿using System.Net;
 using System.Text.RegularExpressions;
 using RepositoryBankingAPI.Clients;
+using RepositoryBankingAPI.Interfaces;
 using RepositoryBankingAPI.Models;
+using RepositoryBankingAPI.Models.Constants;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 using RepositoryBankingAPI.Repositories;

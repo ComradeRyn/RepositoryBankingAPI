@@ -1,4 +1,4 @@
-﻿namespace RepositoryBankingAPI.Services;
+﻿namespace RepositoryBankingAPI.Models.Constants;
 
 public static class Messages
 {

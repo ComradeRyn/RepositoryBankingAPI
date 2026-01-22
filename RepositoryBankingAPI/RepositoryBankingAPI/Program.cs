@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RepositoryBankingAPI.Clients;
+using RepositoryBankingAPI.Interfaces;
 using RepositoryBankingAPI.Models;
 using RepositoryBankingAPI.Repositories;
 using RepositoryBankingAPI.Services;

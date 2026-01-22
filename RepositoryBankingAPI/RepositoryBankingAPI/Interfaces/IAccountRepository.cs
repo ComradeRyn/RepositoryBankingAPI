@@ -1,6 +1,6 @@
 ﻿using RepositoryBankingAPI.Models;
 
-namespace RepositoryBankingAPI.Repositories;
+namespace RepositoryBankingAPI.Interfaces;
 
 public interface IAccountRepository
 {

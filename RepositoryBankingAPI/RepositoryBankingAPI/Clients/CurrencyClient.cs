@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using RepositoryBankingAPI.Interfaces;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 
 namespace RepositoryBankingAPI.Clients;

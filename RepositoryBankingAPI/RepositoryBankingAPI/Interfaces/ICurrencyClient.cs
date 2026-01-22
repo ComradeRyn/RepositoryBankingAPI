@@ -1,6 +1,6 @@
 ﻿using RepositoryBankingAPI.Models.DTOs.Responses;
 
-namespace RepositoryBankingAPI.Clients;
+namespace RepositoryBankingAPI.Interfaces;
 
 public interface ICurrencyClient
 {
