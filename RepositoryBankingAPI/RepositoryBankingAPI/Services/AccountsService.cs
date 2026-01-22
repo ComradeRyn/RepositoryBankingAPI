@@ -59,66 +59,66 @@ public class AccountsService
             null);
     }
 
-    public async Task<ApiResponse<ChangeBalanceResponse>> Deposit(ApiRequest<ChangeBalanceRequest> request)
+    public async Task<ApiResponse<Account>> Deposit(ApiRequest<ChangeBalanceRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
         if (account is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+            return new ApiResponse<Account>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound);
         }
 
         if (request.Content.Amount <= 0)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
                 null, 
                 Messages.NoNegativeAmount);
         }
 
         await _repo.UpdateAccount(account, request.Content.Amount);
         
-        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK,
-            account.Balance.AsDto(),
+        return new ApiResponse<Account>(HttpStatusCode.OK,
+            account.AsDto(),
             null);
     }
 
-    public async Task<ApiResponse<ChangeBalanceResponse>> Withdraw(ApiRequest<ChangeBalanceRequest> request)
+    public async Task<ApiResponse<Account>> Withdraw(ApiRequest<ChangeBalanceRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
         if (account is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+            return new ApiResponse<Account>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound);
         }
 
         if (request.Content.Amount <= 0)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
                 null,
                 Messages.NoNegativeAmount);
         }
 
         if (request.Content.Amount > account.Balance)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
                 null,
                 Messages.InsufficientBalance);
         }
         
         await _repo.UpdateAccount(account, request.Content.Amount * -1);
         
-        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK,
-            account.Balance.AsDto(),
+        return new ApiResponse<Account>(HttpStatusCode.OK,
+            account.AsDto(),
             null);
     }
     
-    public async Task<ApiResponse<ChangeBalanceResponse>> Transfer(TransferRequest request)
+    public async Task<ApiResponse<Account>> Transfer(TransferRequest request)
     {
         if (request.Amount <= 0)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
                 null,
                 Messages.NoNegativeAmount);
         }
@@ -126,7 +126,7 @@ public class AccountsService
         var receiver = await _repo.GetAccount(request.ReceiverId);
         if (receiver is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+            return new ApiResponse<Account>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound);
         }
@@ -134,14 +134,14 @@ public class AccountsService
         var sender = await _repo.GetAccount(request.SenderId);
         if (sender is null)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.NotFound,
+            return new ApiResponse<Account>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound);
         }
 
         if (request.Amount > sender.Balance)
         {
-            return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.BadRequest,
+            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
                 null,
                 Messages.InsufficientBalance);
         }
@@ -149,8 +149,8 @@ public class AccountsService
         await _repo.UpdateAccount(sender, request.Amount * -1);
         await _repo.UpdateAccount(receiver, request.Amount);
 
-        return new ApiResponse<ChangeBalanceResponse>(HttpStatusCode.OK,
-            receiver.Balance.AsDto(),
+        return new ApiResponse<Account>(HttpStatusCode.OK,
+            receiver.AsDto(),
             null);
     }
     

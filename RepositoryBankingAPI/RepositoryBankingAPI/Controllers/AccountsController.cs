@@ -60,12 +60,12 @@ namespace RepositoryBankingAPI.Controllers
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
         /// <param name="request">A record which contains a decimal Amount that will be deposited</param>
-        /// <returns>A response record containing the new account balance</returns>
+        /// <returns>The updated account details</returns>
         [HttpPost("{id}/deposits")]
-        [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ChangeBalanceResponse>> PostDeposit(string id, ChangeBalanceRequest request)
+        public async Task<ActionResult<Account>> PostDeposit(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Deposit(new ApiRequest<ChangeBalanceRequest>(id, request));
             if (!response.ValidateSuccessfulCode())
@@ -81,12 +81,12 @@ namespace RepositoryBankingAPI.Controllers
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
         /// <param name="request">A record which contains a decimal Amount that will be withdrawn</param>
-        /// <returns>A response record containing the new account balance</returns>
+        /// <returns>The updated account details</returns>
         [HttpPost("{id}/withdraws")]
-        [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ChangeBalanceResponse>> PostWithdraw(string id, ChangeBalanceRequest request)
+        public async Task<ActionResult<Account>> PostWithdraw(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Withdraw(new ApiRequest<ChangeBalanceRequest>(id, request));
             if (!response.ValidateSuccessfulCode())
@@ -102,12 +102,12 @@ namespace RepositoryBankingAPI.Controllers
         /// </summary>
         /// <param name="request">A record that contains an id for the sending account, an id for the receiving
         /// account, along with the decimal amount that will be transferred</param>
-        /// <returns>A response record containing the receiver's new account balance</returns>
+        /// <returns>The sender's new account details</returns>
         [HttpPost("transfers")]
-        [ProducesResponseType(typeof(ChangeBalanceResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ChangeBalanceResponse>> PostTransfer(TransferRequest request)
+        public async Task<ActionResult<Account>> PostTransfer(TransferRequest request)
         {
             var response = await _service.Transfer(request);
             if (!response.ValidateSuccessfulCode())
