@@ -19,8 +19,8 @@ public class CurrencyClient : ICurrencyClient
     {
         try
         {
-            var response = await _httpClient.
-                GetFromJsonAsync<ConversionResponse>
+            var response = await _httpClient
+                .GetFromJsonAsync<ConversionResponse>
                     ($"v1/latest?apikey={_configuration["ApiKey"]}&currencies={currencyTypes}");
 
             return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, response, null);
