@@ -1,4 +1,3 @@
-using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;

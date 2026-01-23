@@ -8,15 +8,13 @@ public class CurrencyClientResponse(
     string? errorMessage,
     Dictionary<string, decimal>? conversionRates)
 {
-    public HttpStatusCode StatusCode { get; init; } = statusCode;
-    public string? ErrorMessage { get; init; } = errorMessage;
+    public HttpStatusCode StatusCode { get; } = statusCode;
+    public string? ErrorMessage { get; } = errorMessage;
     [JsonPropertyName("data")]
-    public Dictionary<string, decimal>? ConversionRates { get; init; } = conversionRates;
+    public Dictionary<string, decimal>? ConversionRates { get; } = conversionRates;
     public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
     
     [JsonConstructor]
     public CurrencyClientResponse(Dictionary<string, decimal> conversionRates) 
-        : this(HttpStatusCode.OK, null, conversionRates)
-    { }
-
+        : this(HttpStatusCode.OK, null, conversionRates) { }
 }
