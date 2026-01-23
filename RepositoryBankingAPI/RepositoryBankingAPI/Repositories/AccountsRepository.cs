@@ -3,11 +3,11 @@ using RepositoryBankingAPI.Models;
 
 namespace RepositoryBankingAPI.Repositories;
 
-public class AccountsRepository : IAccountRepository
+public class AccountsesRepository : IAccountsRepository
 {
     private readonly AccountContext _context;
 
-    public AccountsRepository(AccountContext context)
+    public AccountsesRepository(AccountContext context)
     {
         _context = context;
     }

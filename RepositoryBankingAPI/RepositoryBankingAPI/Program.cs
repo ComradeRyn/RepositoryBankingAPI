@@ -21,7 +21,7 @@ builder.Services.AddHttpClient<ICurrencyClient, CurrencyClient>(client =>
     client.BaseAddress = new Uri(builder.Configuration["ApiWebAddress"]!);
 });
 
-builder.Services.AddScoped<IAccountRepository, AccountsRepository>();
+builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
 builder.Services.AddScoped<AccountsService>();
 
 var app = builder.Build();

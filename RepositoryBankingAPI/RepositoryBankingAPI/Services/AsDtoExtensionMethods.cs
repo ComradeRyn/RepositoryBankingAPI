@@ -1,10 +1,9 @@
-﻿using System.Net;
-using RepositoryBankingAPI.Models.DTOs.Responses;
+﻿using RepositoryBankingAPI.Models.DTOs.Responses;
 using Account = RepositoryBankingAPI.Models.DTOs.Responses.Account;
 
 namespace RepositoryBankingAPI.Services;
 
-public static class DtoExtensionMethods
+public static class AsDtoExtensionMethods
 {
     public static Account AsDto(this Models.Account account) 
         => new(account.Id, account.HolderName, account.Balance);
