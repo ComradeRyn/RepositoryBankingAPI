@@ -15,8 +15,14 @@ public class AccountRepository : IAccountRepository
     public async Task<Account?> GetAccount(string id)
         => await _context.Accounts.FindAsync(id);
 
-    public async Task<Account> AddAccount(Account account)
+    public async Task<Account> AddAccount(string name)
     {
+        var account = new Account
+        {
+            Id = Guid.NewGuid().ToString(),
+            HolderName = name,
+        };
+        
         await _context.Accounts.AddAsync(account);
         await _context.SaveChangesAsync();
 

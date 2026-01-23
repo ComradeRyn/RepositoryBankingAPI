@@ -28,9 +28,9 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<Account>> PostAccount(CreationRequest request)
         {
             var response = await _service.CreateAccount(request);
-            if (response.StatusCode is HttpStatusCode.NotFound)
+            if (!response.IsSuccess)
             {
-                return NotFound(response.ErrorMessage);
+                return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
             return Ok(response.Content);
@@ -47,9 +47,9 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<Account>> GetAccount(string id)
         {
             var response = await _service.GetAccount(id);
-            if (response.StatusCode is HttpStatusCode.NotFound)
+            if (!response.IsSuccess)
             {
-                return NotFound(response.ErrorMessage);
+                return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
 
             return Ok(response.Content);
@@ -68,7 +68,7 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<Account>> PostDeposit(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Deposit(new AccountRequest<ChangeBalanceRequest>(id, request));
-            if (!response.ValidateSuccessfulCode())
+            if (!response.IsSuccess)
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
@@ -89,7 +89,7 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<Account>> PostWithdraw(string id, ChangeBalanceRequest request)
         {
             var response = await _service.Withdraw(new AccountRequest<ChangeBalanceRequest>(id, request));
-            if (!response.ValidateSuccessfulCode())
+            if (!response.IsSuccess)
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
@@ -110,7 +110,7 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<Account>> PostTransfer(TransferRequest request)
         {
             var response = await _service.Transfer(request);
-            if (!response.ValidateSuccessfulCode())
+            if (!response.IsSuccess)
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
@@ -132,7 +132,7 @@ namespace RepositoryBankingAPI.Controllers
         public async Task<ActionResult<ConversionResponse>> GetConversion(string id, ConversionRequest request)
         {
             var response = await _service.Convert(new AccountRequest<ConversionRequest>(id, request));
-            if (!response.ValidateSuccessfulCode())
+            if (!response.IsSuccess)
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
             }
