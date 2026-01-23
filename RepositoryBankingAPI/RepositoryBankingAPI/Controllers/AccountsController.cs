@@ -19,7 +19,7 @@ namespace RepositoryBankingAPI.Controllers
         /// <summary>
         /// Creates a new Account with the provided name given the name follows the required naming convention
         /// </summary>
-        /// <param name="request">A record which contains a string Name for the new account</param>
+        /// <param name="request">A record which contains a string name for the new account</param>
         /// <returns>The information of the generated account</returns>
         [HttpPost]
         [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
@@ -58,7 +58,7 @@ namespace RepositoryBankingAPI.Controllers
         /// Adds an entered money amount to a requested account
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
-        /// <param name="request">A record which contains a decimal Amount that will be deposited</param>
+        /// <param name="request">A record which contains a decimal amount that will be deposited</param>
         /// <returns>The updated account details</returns>
         [HttpPost("{id}/deposits")]
         [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
@@ -79,7 +79,7 @@ namespace RepositoryBankingAPI.Controllers
         /// Subtracts an entered money amount to a requested account
         /// </summary>
         /// <param name="id">The unique identification for the requested account</param>
-        /// <param name="request">A record which contains a decimal Amount that will be withdrawn</param>
+        /// <param name="request">A record which contains a decimal amount that will be withdrawn</param>
         /// <returns>The updated account details</returns>
         [HttpPost("{id}/withdraws")]
         [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
@@ -101,7 +101,7 @@ namespace RepositoryBankingAPI.Controllers
         /// </summary>
         /// <param name="request">A record that contains an id for the sending account, an id for the receiving
         /// account, along with the decimal amount that will be transferred</param>
-        /// <returns>The sender's new account details</returns>
+        /// <returns>The sender's updated account details</returns>
         [HttpPost("transfers")]
         [ProducesResponseType(typeof(Account), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
