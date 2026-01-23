@@ -11,18 +11,18 @@ namespace RepositoryBankingAPI.Services;
 public class AccountsService
 {
     private const string NameRegexp = @"([A-Z][a-z]+)\s(([A-Z][a-z]*)\s)?([A-Z][a-z]+)";
-    private readonly IAccountRepository _repo;
+    private readonly IAccountRepository _accountRepository;
     private readonly ICurrencyClient _client;
 
-    public AccountsService(IAccountRepository repo, ICurrencyClient client)
+    public AccountsService(IAccountRepository accountRepository, ICurrencyClient client)
     {
-        _repo = repo;
+        _accountRepository = accountRepository;
         _client = client;
     }
 
     public async Task<ApiResponse<Account>> GetAccount(string id)
     {
-        var account = await _repo.GetAccount(id);
+        var account = await _accountRepository.GetAccount(id);
         if (account is null)
         {
             return new ApiResponse<Account>(HttpStatusCode.NotFound,
@@ -58,7 +58,7 @@ public class AccountsService
 
     public async Task<ApiResponse<Account>> Deposit(AccountRequest<ChangeBalanceRequest> request)
     {
-        var account = await _repo.GetAccount(request.Id);
+        var account = await _accountRepository.GetAccount(request.Id);
         if (account is null)
         {
             return new ApiResponse<Account>(HttpStatusCode.NotFound,
@@ -73,7 +73,7 @@ public class AccountsService
                 Messages.NoNegativeAmount);
         }
 
-        await _repo.UpdateAccount(account, request.Content.Amount);
+        await _accountRepository.UpdateAccount(account, request.Content.Amount);
         
         return new ApiResponse<Account>(HttpStatusCode.OK,
             account.AsDto(),
@@ -82,7 +82,7 @@ public class AccountsService
 
     public async Task<ApiResponse<Account>> Withdraw(AccountRequest<ChangeBalanceRequest> request)
     {
-        var account = await _repo.GetAccount(request.Id);
+        var account = await _accountRepository.GetAccount(request.Id);
         if (account is null)
         {
             return new ApiResponse<Account>(HttpStatusCode.NotFound,
@@ -104,7 +104,7 @@ public class AccountsService
                 Messages.InsufficientBalance);
         }
         
-        await _repo.UpdateAccount(account, request.Content.Amount * -1);
+        await _accountRepository.UpdateAccount(account, request.Content.Amount * -1);
         
         return new ApiResponse<Account>(HttpStatusCode.OK,
             account.AsDto(),
@@ -120,7 +120,7 @@ public class AccountsService
                 Messages.NoNegativeAmount);
         }
         
-        var receiver = await _repo.GetAccount(request.ReceiverId);
+        var receiver = await _accountRepository.GetAccount(request.ReceiverId);
         if (receiver is null)
         {
             return new ApiResponse<Account>(HttpStatusCode.NotFound,
@@ -128,7 +128,7 @@ public class AccountsService
                 Messages.NotFound);
         }
         
-        var sender = await _repo.GetAccount(request.SenderId);
+        var sender = await _accountRepository.GetAccount(request.SenderId);
         if (sender is null)
         {
             return new ApiResponse<Account>(HttpStatusCode.NotFound,
@@ -143,8 +143,8 @@ public class AccountsService
                 Messages.InsufficientBalance);
         }
         
-        await _repo.UpdateAccount(sender, request.Amount * -1);
-        await _repo.UpdateAccount(receiver, request.Amount);
+        await _accountRepository.UpdateAccount(sender, request.Amount * -1);
+        await _accountRepository.UpdateAccount(receiver, request.Amount);
 
         return new ApiResponse<Account>(HttpStatusCode.OK,
             receiver.AsDto(),
@@ -153,7 +153,7 @@ public class AccountsService
     
     public async Task<ApiResponse<ConversionResponse>> Convert(AccountRequest<ConversionRequest> request)
     {
-        var account = await _repo.GetAccount(request.Id);
+        var account = await _accountRepository.GetAccount(request.Id);
         if (account is null)
         {
             return new ApiResponse<ConversionResponse>(HttpStatusCode.NotFound,
