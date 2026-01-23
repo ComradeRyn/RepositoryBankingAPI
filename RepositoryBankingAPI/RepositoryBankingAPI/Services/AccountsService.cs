@@ -4,7 +4,6 @@ using RepositoryBankingAPI.Interfaces;
 using RepositoryBankingAPI.Models.Constants;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;
-using Account = RepositoryBankingAPI.Models.DTOs.Responses.Account;
 
 namespace RepositoryBankingAPI.Services;
 
@@ -12,12 +11,12 @@ public class AccountsService
 {
     private const string NameRegexp = @"([A-Z][a-z]+)\s(([A-Z][a-z]*)\s)?([A-Z][a-z]+)";
     private readonly IAccountsRepository _accountsRepository;
-    private readonly ICurrencyClient _client;
+    private readonly ICurrencyClient _currencyClient;
 
-    public AccountsService(IAccountsRepository accountsRepository, ICurrencyClient client)
+    public AccountsService(IAccountsRepository accountsRepository, ICurrencyClient currencyClient)
     {
         _accountsRepository = accountsRepository;
-        _client = client;
+        _currencyClient = currencyClient;
     }
 
     public async Task<ApiResponse<Account>> GetAccount(string id)
@@ -108,13 +107,6 @@ public class AccountsService
     
     public async Task<ApiResponse<Account>> Transfer(TransferRequest request)
     {
-        if (request.Amount <= 0)
-        {
-            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
-                null,
-                Messages.NoNegativeAmount);
-        }
-        
         var receiver = await _accountsRepository.GetAccount(request.ReceiverId);
         if (receiver is null)
         {
@@ -129,6 +121,13 @@ public class AccountsService
             return new ApiResponse<Account>(HttpStatusCode.NotFound,
                 null,
                 Messages.NotFound);
+        }
+        
+        if (request.Amount <= 0)
+        {
+            return new ApiResponse<Account>(HttpStatusCode.BadRequest,
+                null,
+                Messages.NoNegativeAmount);
         }
 
         if (request.Amount > sender.Balance)
@@ -156,7 +155,7 @@ public class AccountsService
                 Messages.NotFound); 
         }
 
-        var response = await _client.GetConversionRates(request.Content.CurrencyType);
+        var response = await _currencyClient.GetConversionRates(request.Content.CurrencyType);
         if (!response.IsSuccess)
         {
             return new ApiResponse<ConversionResponse>(response.StatusCode,
