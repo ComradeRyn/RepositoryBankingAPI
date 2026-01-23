@@ -4,9 +4,9 @@ namespace RepositoryBankingAPI.Models.DTOs.Responses;
 
 public class ApiResponse<T>(HttpStatusCode statusCode, T? content, string? errorMessage)
 {
-    public HttpStatusCode StatusCode { get; init; } = statusCode;
-    public T? Content { get; init; } = content;
-    public string? ErrorMessage { get; init; } = errorMessage;
+    public HttpStatusCode StatusCode { get; } = statusCode;
+    public T? Content { get; } = content;
+    public string? ErrorMessage { get; } = errorMessage;
     public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
 }
     

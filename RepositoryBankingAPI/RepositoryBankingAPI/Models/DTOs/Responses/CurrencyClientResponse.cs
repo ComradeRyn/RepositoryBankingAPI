@@ -3,28 +3,20 @@ using System.Text.Json.Serialization;
 
 namespace RepositoryBankingAPI.Models.DTOs.Responses;
 
-public class CurrencyClientResponse
+public class CurrencyClientResponse(
+    HttpStatusCode statusCode,
+    string? errorMessage,
+    Dictionary<string, decimal>? conversionRates)
 {
-    public HttpStatusCode StatusCode { get; init; }
-    public string? ErrorMessage { get; init; }
+    public HttpStatusCode StatusCode { get; init; } = statusCode;
+    public string? ErrorMessage { get; init; } = errorMessage;
     [JsonPropertyName("data")]
-    public Dictionary<string, decimal>? ConversionRates { get; init; }
-
-    public CurrencyClientResponse(HttpStatusCode statusCode, 
-        string? errorMessage,
-        Dictionary<string, decimal>? conversionRates)
-    {
-        StatusCode = statusCode;
-        ErrorMessage = errorMessage;
-        ConversionRates = conversionRates;
-    }
+    public Dictionary<string, decimal>? ConversionRates { get; init; } = conversionRates;
+    public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
 
     [JsonConstructor]
-    public CurrencyClientResponse(Dictionary<string, decimal> conversionRates)
-    {
-        ConversionRates = conversionRates;
-        StatusCode = HttpStatusCode.OK;
-        ErrorMessage = null;
-    }
+    public CurrencyClientResponse(Dictionary<string, decimal> conversionRates) 
+        : this(HttpStatusCode.OK, null, conversionRates)
+    { }
 
 }

@@ -1,12 +1,9 @@
 ﻿using System.Net;
 using System.Text.RegularExpressions;
-using RepositoryBankingAPI.Clients;
 using RepositoryBankingAPI.Interfaces;
-using RepositoryBankingAPI.Models;
 using RepositoryBankingAPI.Models.Constants;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;
-using RepositoryBankingAPI.Repositories;
 using Account = RepositoryBankingAPI.Models.DTOs.Responses.Account;
 
 namespace RepositoryBankingAPI.Services;
@@ -165,17 +162,22 @@ public class AccountsService
         }
 
         var response = await _client.GetConversionRates(request.Content.CurrencyType);
-        if (response.Content is null)
+        if (!response.IsSuccess)
         {
-            return response;
+            return new ApiResponse<ConversionResponse>(response.StatusCode,
+                null,
+                response.ErrorMessage);
         }
 
-        foreach (var currencyType in response.Content.Data.Keys)
+        var convertedCurrencies = response.ConversionRates;
+        foreach (var currencyType in convertedCurrencies!.Keys)
         {
-            response.Content.Data[currencyType] *= account.Balance;
+            convertedCurrencies[currencyType] *= account.Balance;
         }
 
-        return response;
+        return new ApiResponse<ConversionResponse>(HttpStatusCode.OK,
+            convertedCurrencies.AsDto(),
+            null);
     }
 
     private bool ValidateName(string name)
