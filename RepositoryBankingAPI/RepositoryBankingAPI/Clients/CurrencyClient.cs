@@ -24,7 +24,9 @@ public class CurrencyClient : ICurrencyClient
         using var response = await _httpClient.SendAsync(request);
         if (!response.IsSuccessStatusCode)
         {
-            return new CurrencyClientResponse(response.StatusCode, response.ReasonPhrase, null);
+            return new CurrencyClientResponse(response.StatusCode, 
+                response.ReasonPhrase, 
+                null);
         }
 
         var responseContent = await response.Content.ReadAsStringAsync();
