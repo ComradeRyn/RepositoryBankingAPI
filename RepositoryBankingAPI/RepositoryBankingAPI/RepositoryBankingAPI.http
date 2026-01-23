@@ -1,6 +1,61 @@
-@RepositoryBankingAPI_HostAddress = http://localhost:5226
+# @name create
+POST http://localhost:5226/api/Accounts
+Content-Type: application/json
 
-GET {{RepositoryBankingAPI_HostAddress}}/weatherforecast/
-Accept: application/json
+{
+  "name": "Ryan L Yuncza"
+}
+
+> {%
+    client.global.set("id", response.body.id)
+%}
+
+<> 2026-01-23T142444.200.json
 
 ###
+GET http://localhost:5226/api/Accounts/{{id}}
+
+<> 2026-01-23T142500.200.json
+<> 2026-01-23T142459.200.json
+<> 2026-01-23T142451.200.json
+<> 2026-01-23T142450.200.json
+<> 2026-01-23T142448.200.json
+<> 2026-01-23T142447.200.json
+
+###
+POST http://localhost:5226/api/Accounts/{{id}}/deposits
+Content-Type: application/json
+
+{
+  "Amount": 250
+}
+
+<> 2026-01-23T142457.200.json
+<> 2026-01-23T142456.200.json
+
+###
+POST http://localhost:5226/api/Accounts/{{id}}/withdraws
+Content-Type: application/json
+
+{
+  "Amount": 300
+}
+
+###
+POST http://localhost:5226/api/Accounts/transfers
+Content-Type: application/json
+
+{
+  "Amount": 9999999910,
+  "SenderId": "ad21f0d7-d1a6-46fc-b656-afcc38fa0ff1",
+  "ReceiverId": "ad21f0d7-d1a6-46fc-b656-afcc38fa0ff1"
+}
+
+###
+GET http://localhost:5226/api/Accounts/{{id}}/convert
+Content-Type: application/json
+
+{
+  "CurrencyType": "EUR,CAD"
+}
+
