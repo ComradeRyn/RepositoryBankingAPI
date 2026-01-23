@@ -13,7 +13,7 @@ public class CurrencyClientResponse(
     [JsonPropertyName("data")]
     public Dictionary<string, decimal>? ConversionRates { get; init; } = conversionRates;
     public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
-
+    
     [JsonConstructor]
     public CurrencyClientResponse(Dictionary<string, decimal> conversionRates) 
         : this(HttpStatusCode.OK, null, conversionRates)
