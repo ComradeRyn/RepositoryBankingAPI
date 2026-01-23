@@ -43,13 +43,8 @@ public class AccountsService
                 null,
                 Messages.InvalidName);
         }
-
-        var newAccount = new Models.Account
-        {
-            Id = Guid.NewGuid().ToString(),
-            HolderName = request.Name,
-        };
-        await _repo.AddAccount(newAccount);
+        
+        var newAccount = await _accountRepository.AddAccount(request.Name);
         
         return new ApiResponse<Account>(HttpStatusCode.OK, 
             newAccount.AsDto(), 

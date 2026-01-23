@@ -5,6 +5,6 @@ namespace RepositoryBankingAPI.Interfaces;
 public interface IAccountRepository
 {
     Task<Account?> GetAccount(string id);
-    Task<Account> AddAccount(Account account);
+    Task<Account> AddAccount(string name);
     Task<Account> UpdateAccount(Account account, decimal amount);
 }
