@@ -67,7 +67,7 @@ namespace RepositoryBankingAPI.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Account>> PostDeposit(string id, ChangeBalanceRequest request)
         {
-            var response = await _service.Deposit(new ApiRequest<ChangeBalanceRequest>(id, request));
+            var response = await _service.Deposit(new AccountRequest<ChangeBalanceRequest>(id, request));
             if (!response.ValidateSuccessfulCode())
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
@@ -88,7 +88,7 @@ namespace RepositoryBankingAPI.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Account>> PostWithdraw(string id, ChangeBalanceRequest request)
         {
-            var response = await _service.Withdraw(new ApiRequest<ChangeBalanceRequest>(id, request));
+            var response = await _service.Withdraw(new AccountRequest<ChangeBalanceRequest>(id, request));
             if (!response.ValidateSuccessfulCode())
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);
@@ -131,7 +131,7 @@ namespace RepositoryBankingAPI.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status422UnprocessableEntity)]
         public async Task<ActionResult<ConversionResponse>> GetConversion(string id, ConversionRequest request)
         {
-            var response = await _service.Convert(new ApiRequest<ConversionRequest>(id, request));
+            var response = await _service.Convert(new AccountRequest<ConversionRequest>(id, request));
             if (!response.ValidateSuccessfulCode())
             {
                 return StatusCode((int)response.StatusCode, response.ErrorMessage);

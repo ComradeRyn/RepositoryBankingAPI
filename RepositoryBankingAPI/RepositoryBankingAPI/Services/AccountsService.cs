@@ -56,7 +56,7 @@ public class AccountsService
             null);
     }
 
-    public async Task<ApiResponse<Account>> Deposit(ApiRequest<ChangeBalanceRequest> request)
+    public async Task<ApiResponse<Account>> Deposit(AccountRequest<ChangeBalanceRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
         if (account is null)
@@ -80,7 +80,7 @@ public class AccountsService
             null);
     }
 
-    public async Task<ApiResponse<Account>> Withdraw(ApiRequest<ChangeBalanceRequest> request)
+    public async Task<ApiResponse<Account>> Withdraw(AccountRequest<ChangeBalanceRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
         if (account is null)
@@ -151,7 +151,7 @@ public class AccountsService
             null);
     }
     
-    public async Task<ApiResponse<ConversionResponse>> Convert(ApiRequest<ConversionRequest> request)
+    public async Task<ApiResponse<ConversionResponse>> Convert(AccountRequest<ConversionRequest> request)
     {
         var account = await _repo.GetAccount(request.Id);
         if (account is null)

@@ -1,3 +1,3 @@
 ﻿namespace RepositoryBankingAPI.Models.DTOs.Requests;
 
-public record ApiRequest<T>(string Id, T Content);
+public record AccountRequest<T>(string Id, T Content);
