@@ -11,4 +11,3 @@ public class ApiResponse<T>(HttpStatusCode statusCode,
     public string? ErrorMessage { get; } = errorMessage;
     public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
 }
-    
