@@ -1,4 +1,4 @@
-﻿using System.Net;
+﻿using System.Text.Json;
 using RepositoryBankingAPI.Interfaces;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 
@@ -15,32 +15,20 @@ public class CurrencyClient : ICurrencyClient
         _httpClient = httpClient;
     }
     
-    // TODO: Left off at refactoring this method as stated in the feed
-    public async Task<ApiResponse<ConversionResponse>> GetConversionRates(string currencyTypes)
+    public async Task<CurrencyClientResponse> GetConversionRates(string currencyTypes)
     {
-        // try
-        // {
-        //     var response = await _httpClient
-        //         .GetFromJsonAsync<ConversionResponse>
-        //             ($"v1/latest?apikey={_configuration["ApiKey"]}&currencies={currencyTypes}");
-        //
-        //     return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, response, null);
-        // }
-        // catch (HttpRequestException e)
-        // {
-        //     return new ApiResponse<ConversionResponse>((HttpStatusCode)e.StatusCode!, null, e.Message);
-        // }
         using var request = new HttpRequestMessage(
             HttpMethod.Get,
             $"v1/latest?apikey={_configuration["ApiKey"]}&currencies={currencyTypes}");
+        
         using var response = await _httpClient.SendAsync(request);
-
         if (!response.IsSuccessStatusCode)
         {
-            // Return some kind of error
+            return new CurrencyClientResponse(response.StatusCode, response.ReasonPhrase, null);
         }
 
-        // Return some kind of not error
-        return null;
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        return JsonSerializer.Deserialize<CurrencyClientResponse>(responseContent)!;
     }
 }

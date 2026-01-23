@@ -4,5 +4,5 @@ namespace RepositoryBankingAPI.Interfaces;
 
 public interface ICurrencyClient
 {
-    Task<ApiResponse<ConversionResponse>> GetConversionRates(string currencyTypes);
+    Task<CurrencyClientResponse> GetConversionRates(string currencyTypes);
 }

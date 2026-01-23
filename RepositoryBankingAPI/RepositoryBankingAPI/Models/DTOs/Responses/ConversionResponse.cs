@@ -1,3 +1,5 @@
-﻿namespace RepositoryBankingAPI.Models.DTOs.Responses;
+﻿using System.Net;
+
+namespace RepositoryBankingAPI.Models.DTOs.Responses;
 
 public record ConversionResponse(Dictionary<string, decimal> Data);
