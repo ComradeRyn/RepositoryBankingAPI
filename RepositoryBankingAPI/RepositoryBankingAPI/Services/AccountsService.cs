@@ -28,7 +28,7 @@ public class AccountsService
             return new ApiResponse<Account>(HttpStatusCode.NotFound, Messages.NotFound);
         }
         
-        return new ApiResponse<Account>(HttpStatusCode.OK, account.AsDto());
+        return new ApiResponse<Account>(account.AsDto());
     }
 
     public async Task<ApiResponse<Account>> CreateAccount(CreationRequest request)
@@ -40,7 +40,7 @@ public class AccountsService
         
         var newAccount = await _accountsRepository.AddAccount(request.Name);
         
-        return new ApiResponse<Account>(HttpStatusCode.OK,newAccount.AsDto());
+        return new ApiResponse<Account>(newAccount.AsDto());
     }
 
     public async Task<ApiResponse<Account>> Deposit(AccountRequest<ChangeBalanceRequest> request)
@@ -58,7 +58,7 @@ public class AccountsService
 
         await _accountsRepository.UpdateAccount(account, request.Content.Amount);
         
-        return new ApiResponse<Account>(HttpStatusCode.OK, account.AsDto());
+        return new ApiResponse<Account>(account.AsDto());
     }
 
     public async Task<ApiResponse<Account>> Withdraw(AccountRequest<ChangeBalanceRequest> request)
@@ -81,7 +81,7 @@ public class AccountsService
         
         await _accountsRepository.UpdateAccount(account, request.Content.Amount * -1);
         
-        return new ApiResponse<Account>(HttpStatusCode.OK, account.AsDto());
+        return new ApiResponse<Account>(account.AsDto());
     }
     
     public async Task<ApiResponse<Account>> Transfer(TransferRequest request)
@@ -111,7 +111,7 @@ public class AccountsService
         await _accountsRepository.UpdateAccount(sender, request.Amount * -1);
         await _accountsRepository.UpdateAccount(receiver, request.Amount);
 
-        return new ApiResponse<Account>(HttpStatusCode.OK, sender.AsDto());
+        return new ApiResponse<Account>(sender.AsDto());
     }
     
     public async Task<ApiResponse<ConversionResponse>> Convert(AccountRequest<ConversionRequest> request)
@@ -134,7 +134,7 @@ public class AccountsService
             convertedCurrencies[currencyType] *= account.Balance;
         }
 
-        return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, new ConversionResponse(convertedCurrencies));
+        return new ApiResponse<ConversionResponse>(new ConversionResponse(convertedCurrencies));
     }
 
     private bool ValidateName(string name)

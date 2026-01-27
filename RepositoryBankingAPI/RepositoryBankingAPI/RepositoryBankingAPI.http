@@ -38,7 +38,7 @@ POST http://localhost:5226/api/Accounts/{{id}}/withdraws
 Content-Type: application/json
 
 {
-  "Amount": 300
+  "Amount": 200
 }
 
 ###
@@ -46,9 +46,9 @@ POST http://localhost:5226/api/Accounts/transfers
 Content-Type: application/json
 
 {
-  "Amount": 9999999910,
-  "SenderId": "ad21f0d7-d1a6-46fc-b656-afcc38fa0ff1",
-  "ReceiverId": "ad21f0d7-d1a6-46fc-b656-afcc38fa0ff1"
+  "Amount": 1,
+  "SenderId": "a4647b39-e1b2-4599-b45f-ab37ace3a1ed",
+  "ReceiverId": "a4647b39-e1b2-4599-b45f-ab37ace3a1ed"
 }
 
 ###

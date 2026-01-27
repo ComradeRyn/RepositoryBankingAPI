@@ -16,9 +16,9 @@ public class ApiResponse<T>
         Content = default;
     }
 
-    public ApiResponse(HttpStatusCode statusCode, T content)
+    public ApiResponse(T content)
     {
-        StatusCode = statusCode;
+        StatusCode = HttpStatusCode.OK;
         Content = content;
         ErrorMessage = null;
     }
