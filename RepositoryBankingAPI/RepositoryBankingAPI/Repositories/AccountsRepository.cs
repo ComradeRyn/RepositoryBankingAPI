@@ -8,7 +8,9 @@ public class AccountsRepository : IAccountsRepository
     private readonly AccountContext _context;
 
     public AccountsRepository(AccountContext context)
-        => _context = context;
+    {
+        _context = context;
+    }
 
     public async Task<Account?> GetAccount(string id)
         => await _context.Accounts.FindAsync(id);
