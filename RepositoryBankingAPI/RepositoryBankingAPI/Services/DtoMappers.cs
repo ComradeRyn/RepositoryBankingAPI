@@ -1,5 +1,4 @@
-﻿using RepositoryBankingAPI.Models.DTOs.Responses;
-using Account = RepositoryBankingAPI.Models.Account;
+﻿using Account = RepositoryBankingAPI.Models.Account;
 
 namespace RepositoryBankingAPI.Services;
 
