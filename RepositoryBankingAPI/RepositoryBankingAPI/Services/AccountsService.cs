@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using RepositoryBankingAPI.Interfaces;
 using RepositoryBankingAPI.Models.Constants;
+using RepositoryBankingAPI.Models.DTOs;
 using RepositoryBankingAPI.Models.DTOs.Requests;
 using RepositoryBankingAPI.Models.DTOs.Responses;
 

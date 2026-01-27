@@ -1,3 +1,3 @@
-﻿namespace RepositoryBankingAPI.Models.DTOs.Responses;
+﻿namespace RepositoryBankingAPI.Models.DTOs;
 
 public record Account(string Id, string HolderName, decimal Amount);
