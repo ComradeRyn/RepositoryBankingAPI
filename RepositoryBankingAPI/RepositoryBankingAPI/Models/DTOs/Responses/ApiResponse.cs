@@ -2,22 +2,24 @@
 
 namespace RepositoryBankingAPI.Models.DTOs.Responses;
 
-public class ApiResponse<T>(HttpStatusCode statusCode, 
-    T? content, 
-    string? errorMessage)
+public class ApiResponse<T>
 {
-    public HttpStatusCode StatusCode { get; } = statusCode;
-    public T? Content { get; } = content;
-    public string? ErrorMessage { get; } = errorMessage;
+    public HttpStatusCode StatusCode { get; }
+    public T? Content { get; }
+    public string? ErrorMessage { get; }
     public bool IsSuccess => string.IsNullOrEmpty(ErrorMessage);
-    
-    public ApiResponse(HttpStatusCode statusCode, string errorMessage) 
-        : this(statusCode, 
-            default, 
-            errorMessage) { }
 
-    public ApiResponse(T content) 
-        : this(HttpStatusCode.OK, 
-            content, 
-            null) { }
+    public ApiResponse(HttpStatusCode statusCode, string errorMessage)
+    {
+        StatusCode = statusCode;
+        Content = default;
+        ErrorMessage = errorMessage;
+    }
+
+    public ApiResponse(T content)
+    {
+        StatusCode = HttpStatusCode.OK;
+        Content = content;
+        ErrorMessage = null;
+    }
 }
