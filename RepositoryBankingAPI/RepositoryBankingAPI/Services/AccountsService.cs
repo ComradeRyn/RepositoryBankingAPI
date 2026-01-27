@@ -134,7 +134,7 @@ public class AccountsService
             convertedCurrencies[currencyType] *= account.Balance;
         }
 
-        return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, convertedCurrencies.AsDto());
+        return new ApiResponse<ConversionResponse>(HttpStatusCode.OK, new ConversionResponse(convertedCurrencies));
     }
 
     private bool ValidateName(string name)
