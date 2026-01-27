@@ -47,8 +47,8 @@ Content-Type: application/json
 
 {
   "Amount": 1,
-  "SenderId": "a4647b39-e1b2-4599-b45f-ab37ace3a1ed",
-  "ReceiverId": "a4647b39-e1b2-4599-b45f-ab37ace3a1ed"
+  "SenderId": "{{id}}",
+  "ReceiverId": "{{id}}"
 }
 
 ###

@@ -16,5 +16,7 @@ public class CurrencyClientResponse(
     
     [JsonConstructor]
     public CurrencyClientResponse(Dictionary<string, decimal> conversionRates) 
-        : this(null, null, conversionRates) { }
+        : this(null, 
+            null, 
+            conversionRates) { }
 }
